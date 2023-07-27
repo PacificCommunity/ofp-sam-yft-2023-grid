@@ -1,7 +1,8 @@
 suppressMessages(library(FLR4MFCL))
 library(tools)  # file_path_sans_ext
 
-template <- "14a_Five_Regions"
+template <- "14c_M_Growth_Phase_Eleven"
+model.prefix <- "14c_"
 species <- "yft"
 
 mix <- 2
@@ -10,7 +11,6 @@ age <- c(0.5, 0.75, 1.0)
 steep <- c(0.65, 0.8, 0.95)
 
 top.dir <- "../grid/m2"
-model.prefix <- "14a_"
 
 age.length.file <- paste0(species, ".age_length")
 frq.file <- paste0(species, ".frq")
