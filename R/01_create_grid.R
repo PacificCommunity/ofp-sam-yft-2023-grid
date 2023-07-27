@@ -1,4 +1,4 @@
-library(FLR4MFCL)
+suppressMessages(library(FLR4MFCL))
 library(tools)  # file_path_sans_ext
 
 template <- "14a_Five_Regions"
@@ -24,10 +24,16 @@ LLfisheries <-
 
 ################################################################################
 
-i <- j <- k <- 1
-a.label <- formatC(100*age, width=3, flag="0")
-h.label <- formatC(100*steep, width=2, flag="0")
+# Read in template par file (once, then reuse many times in loop)
+template.dir <- file.path("../template", template)
+template.parfile <- finalPar(template.dir)
+txt <- readLines(template.parfile)
+first.year <- as.integer(txt[which(txt=="# First year in model")+1])
+cat("* Studying template", template.parfile)
+par <- read.MFCLPar(template.parfile, first.yr=first.year)
+cat(", done\n")
 
+i <- j <- k <- 1  # to quickly step through the code
 for(i in 1:length(size))
 {
   for(j in 1:length(age))
@@ -35,6 +41,8 @@ for(i in 1:length(size))
     for(k in 1:length(steep))
     {
       # Construct model name
+      a.label <- formatC(100*age, width=3, flag="0")
+      h.label <- formatC(100*steep, width=2, flag="0")
       model <- paste0(model.prefix, "m", mix, "_s", size[i],
                       "_a", a.label[j], "_h", h.label[k])
       cat(model, fill=TRUE)
@@ -45,13 +53,6 @@ for(i in 1:length(size))
         unlink(model.dir, recursive=TRUE)
       dir.create(model.dir, recursive=TRUE)
       file.copy(common.files, model.dir, copy.date=TRUE)
-
-      # Read in template par file
-      template.dir <- file.path("../template", template)
-      template.parfile <- finalPar(template.dir)
-      txt <- readLines(template.parfile)
-      first.year <- as.integer(txt[which(txt=="# First year in model")+1])
-      par <- read.MFCLPar(template.parfile, first.yr=first.year)
 
       # Modify par object
       # steepness
@@ -64,6 +65,7 @@ for(i in 1:length(size))
       new.parfile <- file.path(model.dir, basename(template.parfile))
       write(par, new.parfile)
 
+      # Repair new par file
       # Temporary workaround to solve version conflict between MFCL and FLR4MFCL
       # => This block of code can be removed when FLR4MFCL is updated (Oct 2023)
       # Manually edit the grid parfile, following MFCL 2.2.2.0 format (vsn 1066)
@@ -79,7 +81,7 @@ for(i in 1:length(size))
         writeLines(txt, new.parfile)
       }
 
-      # Set age data weighting
+      # Set age data weighting, write new age length file
       txt <- readLines(file.path(model.dir, age.length.file))
       pos <- grep("# num age length records", txt, fixed=TRUE) + 1
       n <- as.integer(txt[pos])
