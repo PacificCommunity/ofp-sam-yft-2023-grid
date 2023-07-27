@@ -1,6 +1,7 @@
 library(condor)
 
 session <- ssh_connect("NOUOFPCALC02")
+options(width=160)
 
 grid.dir <- "m2"
 
