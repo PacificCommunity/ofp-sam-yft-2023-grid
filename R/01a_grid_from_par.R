@@ -1,8 +1,8 @@
 suppressMessages(library(FLR4MFCL))
 library(tools)  # file_path_sans_ext
 
-template <- "14c_M_Growth_Phase_Eleven"
-model.prefix <- "14c_"
+template <- "14a_Five_Regions"
+model.prefix <- "14a_"
 species <- "yft"
 
 mix <- 2
@@ -19,6 +19,10 @@ common.files <- c("condor.sub", "condor_run.sh", "labels.tmp", "mfcl.cfg",
                   "mfclo64", age.length.file, frq.file, tag.file)
 common.files <- file.path("../common", common.files)
 
+# Specify 41 fisheries, so script can be used for BET and YFT
+# The flagval() function only modifies existing flags,
+# so non-existing fishery numbers are harmless
+fisheries <- 1:41
 LLfisheries <-
   c(1, 2, 4, 7, 8, 9, 11, 12, 29, 33, 34, 35, 36, 37, 38, 39, 40, 41)
 
@@ -29,9 +33,9 @@ template.dir <- file.path("../template", template)
 template.parfile <- finalPar(template.dir)
 txt <- readLines(template.parfile)
 first.year <- as.integer(txt[which(txt=="# First year in model")+1])
-cat("* Studying template", template.parfile)
+cat("* Studying template", template.parfile, "... ")
 par <- read.MFCLPar(template.parfile, first.yr=first.year)
-cat(", done\n")
+cat("done\n")
 
 i <- j <- k <- 1  # to quickly step through the code
 for(i in 1:length(size))
@@ -58,7 +62,7 @@ for(i in 1:length(size))
       # steepness
       steepness(par) <- steep[k]
       # size comp data weighting
-      flagval(par, -(1:41), 49:50) <- size[i]
+      flagval(par, -fisheries, 49:50) <- size[i]
       flagval(par, -LLfisheries, 49:50) <- 2*size[i]
 
       # Write new par file
