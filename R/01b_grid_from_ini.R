@@ -24,15 +24,6 @@ LLfisheries <-
 
 ################################################################################
 
-# Read in template par file (once, then reuse many times in loop)
-template.dir <- file.path("../template", template)
-template.parfile <- finalPar(template.dir)
-txt <- readLines(template.parfile)
-first.year <- as.integer(txt[which(txt=="# First year in model")+1])
-cat("* Studying template", template.parfile)
-par <- read.MFCLPar(template.parfile, first.yr=first.year)
-cat(", done\n")
-
 i <- j <- k <- 1  # to quickly step through the code
 for(i in 1:length(size))
 {
@@ -42,60 +33,45 @@ for(i in 1:length(size))
     {
       # Construct model name
       a.label <- formatC(100*age, width=3, flag="0")
-      h.label <- formatC(100*steep, width=2, flag="0")
-      model <- paste0(model.prefix, "m", mix, "_s", size[i],
-                      "_a", a.label[j], "_h", h.label[k])
-      cat(model, fill=TRUE)
+      h.label <- formatC(100*steep, width=3, flag="0")
+      runname <- paste0(jobs.group, "_s", size[i], "_a", a.label[j], "_h", h.label[k])
+      model.run.dir <- file.path(dir.output, jobs.group, runname)
 
-      # Create directory for grid member
-      model.dir <- file.path(top.dir, model)
-      if(dir.exists(model.dir))
-        unlink(model.dir, recursive=TRUE)
-      dir.create(model.dir, recursive=TRUE)
-      file.copy(common.files, model.dir, copy.date=TRUE)
+      # create directory for model run
+      if (! dir.exists(model.run.dir)) dir.create(model.run.dir, recursive = TRUE)
+      file.copy(file.path(dir.input, c(frq_file, ini_file, tag_file, age_length_file, "doitall.sh")),
+                model.run.dir, overwrite=TRUE)
+      file.copy(file.path(dir.input, c("condor.sub", "condor_run.sh", "mfcl.cfg", "mfclo64")),
+                model.run.dir, overwrite=TRUE)
 
-      # Modify par object
-      # steepness
-      steepness(par) <- steep[k]
-      # size comp data weighting
-      flagval(par, -(1:41), 49:50) <- size[i]
-      flagval(par, -LLfisheries, 49:50) <- 2*size[i]
+      # doitall.sh: size weight, age weight, Hessian
+      doitall <- readLines(file.path(model.run.dir, "doitall.sh"), warn = FALSE)
+      pointer <- grep(" -999 49 20", doitall, fixed = TRUE)
+      doitall[pointer] <- paste(" -999 49", size[i],"      # divide LF sample sizes by 20 (default=10)")
+      pointer <- grep(" -999 50 20", doitall, fixed = TRUE)
+      doitall[pointer] <- paste(" -999 50", size[i],"      # divide WF sample sizes by 20 (default=10)")
+      # divide LF & WF samples in 2 again for LL + index
+      pointer <- grep(" 49 40", doitall, fixed = TRUE)
+      doitall[pointer] <- gsub(" 49 40", paste(" 49", 2*size[i]), doitall[pointer])
+      pointer <- grep(" 50 40", doitall, fixed = TRUE)
+      doitall[pointer] <- gsub(" 50 40", paste(" 50", 2*size[i]), doitall[pointer])
 
-      # Write new par file
-      new.parfile <- file.path(model.dir, basename(template.parfile))
-      write(par, new.parfile)
+      # .age_length: age weighting
+      age_l <- readLines(file.path(model.run.dir, age_length_file))
+      pointer.0 <- grep("# num age length records", age_l, fixed = TRUE)
+      num_age_length_records <- as.integer(age_l[pointer.0+1])
+      pointer.1 <- grep("# effective sample size", age_l, fixed = TRUE)
+      pointer.2 <- grep("# Year   Month   Fishery   Species", age_l, fixed = TRUE)
+      pointer.3 <- pointer.2[1]
+      age_l[(pointer.1+1):(pointer.3-1)] <- paste(rep(age[j], times=num_age_length_records), collapse=" ")
+      writeLines(age_l, file.path(model.run.dir, age_length_file))
 
-      # Repair new par file
-      # Temporary workaround to solve version conflict between MFCL and FLR4MFCL
-      # => This block of code can be removed when FLR4MFCL is updated (Oct 2023)
-      # Manually edit the grid parfile, following MFCL 2.2.2.0 format (vsn 1066)
-      # We insert two lines of text (first year) into the middle of the parfile
-      # But only do this if the first year is not already in the parfile
-      txt <- readLines(new.parfile)
-      if(!any(txt == "# First year in model"))
-      {
-        pos2 <- grep("# The grouped_catch_dev_coffs flag", txt, fixed=TRUE)
-        pos1 <- pos2 - 1
-        n <- length(txt)
-        txt <- c(txt[1:pos1], "# First year in model", first.year, txt[pos2:n])
-        writeLines(txt, new.parfile)
-      }
-
-      # Set age data weighting, write new age length file
-      txt <- readLines(file.path(model.dir, age.length.file))
-      pos <- grep("# num age length records", txt, fixed=TRUE) + 1
-      n <- as.integer(txt[pos])
-      pos <- grep("# effective sample size", txt, fixed=TRUE) + 1
-      txt[pos] <- paste(rep(age[j], n), collapse=" ")
-      writeLines(txt, file.path(model.dir, age.length.file))
-
-      # Write doitall
-      start.par <- basename(new.parfile)
-      end.par <- paste0(as.integer(file_path_sans_ext(start.par)) + 1, ".par")
-      doitall <- c("#!/bin/sh", "",
-                   paste("mfclo64", frq.file, start.par, end.par,
-                         "-switch 2 1 1 10000 1 50 -5"))
-      writeLines(doitall, file.path(model.dir, "doitall.sh"))
+      # ini: steepness
+      ini <- readLines(file.path(model.run.dir, ini_file))
+      pointer.h1 <- grep("# sv(29)", ini, fixed = TRUE)
+      pointer.h2 <- grep("# Generic SD of length at age", ini, fixed = TRUE)
+      ini[(pointer.h1+1):(pointer.h2-1)] <- steep[k]
+      writeLines(ini, file.path(model.run.dir, ini_file))
     }
   }
 }
