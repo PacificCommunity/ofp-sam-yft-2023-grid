@@ -1,14 +1,16 @@
 library(FLR4MFCL)
 library(tools)  # file_path_sans_ext
 
-# Directories
-template <- "16a_Five_Regions"
+template <- "14a_Five_Regions"
 species <- "yft"
 
 mix <- 2
 size <- c(10, 20, 40)
 age <- c(0.5, 0.75, 1.0)
 steep <- c(0.65, 0.8, 0.95)
+
+top.dir <- "../grid/m2"
+model.prefix <- "14a_"
 
 age.length.file <- paste0(species, ".age_length")
 frq.file <- paste0(species, ".frq")
@@ -33,12 +35,12 @@ for(i in 1:length(size))
     for(k in 1:length(steep))
     {
       # Construct model name
-      model <- paste0("m", mix, "_s", size[i], "_a",
-                      a.label[j], "_h", h.label[k])
+      model <- paste0(model.prefix, "m", mix, "_s", size[i],
+                      "_a", a.label[j], "_h", h.label[k])
       cat(model, fill=TRUE)
 
       # Create directory for grid member
-      model.dir <- file.path(paste0("../grid/m", mix), model)
+      model.dir <- file.path(top.dir, model)
       if(dir.exists(model.dir))
         unlink(model.dir, recursive=TRUE)
       dir.create(model.dir, recursive=TRUE)
