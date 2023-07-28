@@ -32,7 +32,7 @@ LLfisheries <-
 template.dir <- file.path("../template", template)
 template.parfile <- finalPar(template.dir)
 txt <- readLines(template.parfile)
-first.year <- as.integer(txt[which(txt=="# First year in model")+1])
+first.year <- as.integer(txt[grep("# First year in model", txt) + 1])
 cat("* Studying template", template.parfile, "... ")
 par <- read.MFCLPar(template.parfile, first.yr=first.year)
 cat("done\n")
@@ -64,8 +64,7 @@ for(i in 1:length(size))
       # size comp data weighting
       flagval(par, -fisheries, 49:50) <- size[i]
       flagval(par, -LLfisheries, 49:50) <- 2*size[i]
-
-      # Write new par file
+      # write new par file
       new.parfile <- file.path(model.dir, basename(template.parfile))
       write(par, new.parfile)
 
@@ -76,20 +75,21 @@ for(i in 1:length(size))
       # We insert two lines of text (first year) into the middle of the parfile
       # But only do this if the first year is not already in the parfile
       txt <- readLines(new.parfile)
-      if(!any(txt == "# First year in model"))
+
+      if(!any(grepl("# First year in model", txt)))
       {
-        pos2 <- grep("# The grouped_catch_dev_coffs flag", txt, fixed=TRUE)
+        pos2 <- grep("# The grouped_catch_dev_coffs flag", txt)
         pos1 <- pos2 - 1
         n <- length(txt)
         txt <- c(txt[1:pos1], "# First year in model", first.year, txt[pos2:n])
         writeLines(txt, new.parfile)
       }
 
-      # Set age data weighting, write new age length file
+      # Modify age data weighting
       txt <- readLines(file.path(model.dir, age.length.file))
-      pos <- grep("# num age length records", txt, fixed=TRUE) + 1
+      pos <- grep("# num age length records", txt) + 1
       n <- as.integer(txt[pos])
-      pos <- grep("# effective sample size", txt, fixed=TRUE) + 1
+      pos <- grep("# effective sample size", txt) + 1
       txt[pos] <- paste(rep(age[j], n), collapse=" ")
       writeLines(txt, file.path(model.dir, age.length.file))
 
