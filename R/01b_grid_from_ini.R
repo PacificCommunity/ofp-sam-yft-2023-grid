@@ -10,7 +10,7 @@ size <- c(10, 20, 40)
 age <- c(0.5, 0.75, 1.0)
 steep <- c(0.65, 0.8, 0.95)
 
-top.dir <- "../grid/m2"
+top.dir <- "../grid/m2_ini"
 
 age.length.file <- paste0(species, ".age_length")
 frq.file <- paste0(species, ".frq")
@@ -48,7 +48,7 @@ for(i in 1:length(size))
       if(dir.exists(model.dir))
         unlink(model.dir, recursive=TRUE)
       dir.create(model.dir, recursive=TRUE)
-      file.copy(common.files, model.dir, overwrite=TRUE)
+      file.copy(common.files, model.dir, copy.date=TRUE)
 
       # Modify size and age data weighting
       doitall <- readLines(file.path("../template", template, "doitall.sh"))
