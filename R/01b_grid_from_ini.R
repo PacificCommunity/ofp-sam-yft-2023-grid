@@ -1,8 +1,8 @@
 suppressMessages(library(FLR4MFCL))
 library(tools)  # file_path_sans_ext
 
-template <- "14c_M_Growth_Phase_Eleven"
-model.prefix <- "14c_"
+template <- "14a_Five_Regions"
+model.prefix <- "14a_ini_"
 species <- "yft"
 
 mix <- 2
@@ -14,11 +14,16 @@ top.dir <- "../grid/m2"
 
 age.length.file <- paste0(species, ".age_length")
 frq.file <- paste0(species, ".frq")
+ini.file <- paste0(species, ".ini")
 tag.file <- paste0("mix", mix, "/", species, ".tag")
 common.files <- c("condor.sub", "condor_run.sh", "labels.tmp", "mfcl.cfg",
                   "mfclo64", age.length.file, frq.file, tag.file)
 common.files <- file.path("../common", common.files)
 
+# Specify 41 fisheries, so script can be used for BET and YFT
+# The flagval() function only modifies existing flags,
+# so non-existing fishery numbers are harmless
+fisheries <- 1:41
 LLfisheries <-
   c(1, 2, 4, 7, 8, 9, 11, 12, 29, 33, 34, 35, 36, 37, 38, 39, 40, 41)
 
@@ -33,45 +38,44 @@ for(i in 1:length(size))
     {
       # Construct model name
       a.label <- formatC(100*age, width=3, flag="0")
-      h.label <- formatC(100*steep, width=3, flag="0")
-      runname <- paste0(jobs.group, "_s", size[i], "_a", a.label[j], "_h", h.label[k])
-      model.run.dir <- file.path(dir.output, jobs.group, runname)
+      h.label <- formatC(100*steep, width=2, flag="0")
+      model <- paste0(model.prefix, "m", mix, "_s", size[i],
+                      "_a", a.label[j], "_h", h.label[k])
+      cat(model, fill=TRUE)
 
-      # create directory for model run
-      if (! dir.exists(model.run.dir)) dir.create(model.run.dir, recursive = TRUE)
-      file.copy(file.path(dir.input, c(frq_file, ini_file, tag_file, age_length_file, "doitall.sh")),
-                model.run.dir, overwrite=TRUE)
-      file.copy(file.path(dir.input, c("condor.sub", "condor_run.sh", "mfcl.cfg", "mfclo64")),
-                model.run.dir, overwrite=TRUE)
+      # Create directory for grid member
+      model.dir <- file.path(top.dir, model)
+      if(dir.exists(model.dir))
+        unlink(model.dir, recursive=TRUE)
+      dir.create(model.dir, recursive=TRUE)
+      file.copy(common.files, model.dir, overwrite=TRUE)
 
-      # doitall.sh: size weight, age weight, Hessian
-      doitall <- readLines(file.path(model.run.dir, "doitall.sh"), warn = FALSE)
-      pointer <- grep(" -999 49 20", doitall, fixed = TRUE)
-      doitall[pointer] <- paste(" -999 49", size[i],"      # divide LF sample sizes by 20 (default=10)")
-      pointer <- grep(" -999 50 20", doitall, fixed = TRUE)
-      doitall[pointer] <- paste(" -999 50", size[i],"      # divide WF sample sizes by 20 (default=10)")
+      # Modify size and age data weighting
+      doitall <- readLines(file.path("../template", template, "doitall.sh"))
+      pos <- grep(" -999 49 20", doitall)
+      doitall[pos] <- paste(" -999 49", size[i])
+      pos <- grep(" -999 50 20", doitall)
+      doitall[pos] <- paste(" -999 50", size[i])
       # divide LF & WF samples in 2 again for LL + index
-      pointer <- grep(" 49 40", doitall, fixed = TRUE)
-      doitall[pointer] <- gsub(" 49 40", paste(" 49", 2*size[i]), doitall[pointer])
-      pointer <- grep(" 50 40", doitall, fixed = TRUE)
-      doitall[pointer] <- gsub(" 50 40", paste(" 50", 2*size[i]), doitall[pointer])
+      pos <- grep(" 49 40", doitall)
+      doitall[pos] <- gsub(" 49 40", paste(" 49", 2*size[i]), doitall[pos])
+      pos <- grep(" 50 40", doitall)
+      doitall[pos] <- gsub(" 50 40", paste(" 50", 2*size[i]), doitall[pos])
+      writeLines(doitall, file.path(model.dir, "doitall.sh"))
 
-      # .age_length: age weighting
-      age_l <- readLines(file.path(model.run.dir, age_length_file))
-      pointer.0 <- grep("# num age length records", age_l, fixed = TRUE)
-      num_age_length_records <- as.integer(age_l[pointer.0+1])
-      pointer.1 <- grep("# effective sample size", age_l, fixed = TRUE)
-      pointer.2 <- grep("# Year   Month   Fishery   Species", age_l, fixed = TRUE)
-      pointer.3 <- pointer.2[1]
-      age_l[(pointer.1+1):(pointer.3-1)] <- paste(rep(age[j], times=num_age_length_records), collapse=" ")
-      writeLines(age_l, file.path(model.run.dir, age_length_file))
+      # Modify age data weighting
+      txt <- readLines(file.path(model.dir, age.length.file))
+      pos <- grep("# num age length records", txt) + 1
+      n <- as.integer(txt[pos])
+      pos <- grep("# effective sample size", txt) + 1
+      txt[pos] <- paste(rep(age[j], n), collapse=" ")
+      writeLines(txt, file.path(model.dir, age.length.file))
 
-      # ini: steepness
-      ini <- readLines(file.path(model.run.dir, ini_file))
-      pointer.h1 <- grep("# sv(29)", ini, fixed = TRUE)
-      pointer.h2 <- grep("# Generic SD of length at age", ini, fixed = TRUE)
-      ini[(pointer.h1+1):(pointer.h2-1)] <- steep[k]
-      writeLines(ini, file.path(model.run.dir, ini_file))
+      # Modify steepness
+      ini <- readLines(file.path("../template", template, ini.file))
+      pos <- grep("# sv(29)", ini, fixed=TRUE) + 1
+      ini[pos] <- steep[k]
+      writeLines(ini, file.path(model.dir, ini.file))
     }
   }
 }
