@@ -10,7 +10,7 @@ size <- c(10, 20, 40)
 age <- c(0.5, 0.75, 1.0)
 steep <- c(0.65, 0.8, 0.95)
 
-top.dir <- "../grid/m2"
+top.dir <- "../grid/m2_par"
 
 age.length.file <- paste0(species, ".age_length")
 frq.file <- paste0(species, ".frq")
@@ -93,7 +93,7 @@ for(i in 1:length(size))
       txt[pos] <- paste(rep(age[j], n), collapse=" ")
       writeLines(txt, file.path(model.dir, age.length.file))
 
-      # Write doitall
+      # Create generic doitall
       start.par <- basename(new.parfile)
       end.par <- paste0(as.integer(file_path_sans_ext(start.par)) + 1, ".par")
       doitall <- c("#!/bin/sh", "",
