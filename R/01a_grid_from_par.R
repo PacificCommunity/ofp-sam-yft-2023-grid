@@ -2,7 +2,7 @@ suppressMessages(library(FLR4MFCL))
 library(tools)  # file_path_sans_ext
 
 template <- "14a_Five_Regions"
-model.prefix <- "14a_"
+model.prefix <- "14a_par_"
 species <- "yft"
 
 mix <- 2
