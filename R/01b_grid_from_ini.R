@@ -57,9 +57,8 @@ for(i in 1:length(size))
       pos <- grep(" -999 50 20", doitall)
       doitall[pos] <- paste(" -999 50", size[i])
       # divide LF & WF samples in 2 again for LL + index
-      pos <- grep(" 49 40", doitall)
+      pos <- grep(" 49 40.* 50 40", doitall)
       doitall[pos] <- gsub(" 49 40", paste(" 49", 2*size[i]), doitall[pos])
-      pos <- grep(" 50 40", doitall)
       doitall[pos] <- gsub(" 50 40", paste(" 50", 2*size[i]), doitall[pos])
       writeLines(doitall, file.path(model.dir, "doitall.sh"))
 
