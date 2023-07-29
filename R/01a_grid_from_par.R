@@ -1,21 +1,24 @@
 suppressMessages(library(FLR4MFCL))
 library(tools)  # file_path_sans_ext
 
-template <- "14a_Five_Regions"
-model.prefix <- "14a_par_"
+template <- "14c_Phase_Eleven"
+model.prefix <- "14c_par_"
 species <- "yft"
 
-mix <- 2
+mix <- 1
 size <- c(10, 20, 40)
 age <- c(0.5, 0.75, 1.0)
 steep <- c(0.65, 0.8, 0.95)
+memory <- "small"
 
-top.dir <- "../grid/m2_par"
+top.dir <- paste0("../grid/m", mix, "_par")
 
 age.length.file <- paste0(species, ".age_length")
 frq.file <- paste0(species, ".frq")
 tag.file <- paste0("mix", mix, "/", species, ".tag")
-common.files <- c("condor.sub", "condor_run.sh", "labels.tmp", "mfcl.cfg",
+mfcl.cfg <- file.path(paste0("memory_", memory), "mfcl.cfg")
+condor.sub <- file.path(paste0("memory_", memory), "condor.sub")
+common.files <- c(condor.sub, "condor_run.sh", "labels.tmp", mfcl.cfg,
                   "mfclo64", age.length.file, frq.file, tag.file)
 common.files <- file.path("../common", common.files)
 
