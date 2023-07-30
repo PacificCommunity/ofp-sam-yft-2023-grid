@@ -8,4 +8,5 @@ grid.tab <- do.call(rbind, grid.list)
 
 ################################################################################
 
-write.xlsx(grid.tab, "c:/x/yft/mix2/grid_results.xlsx")
+write.xlsx(grid.tab, "../grid_results.xlsx")
+cat("\nWrote grid_results.xlsx\n")
