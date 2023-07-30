@@ -1,8 +1,8 @@
 suppressMessages(library(FLR4MFCL))
 library(tools)  # file_path_sans_ext
 
-template <- "14c_Phase_Eleven"
-model.prefix <- "14c_par_"
+template <- "30c_Phase_Eleven_Mix1"
+model.prefix <- "30c_par_"
 species <- "yft"
 
 mix <- 1

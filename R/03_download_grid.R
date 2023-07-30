@@ -13,4 +13,4 @@ folders <- file.path("//penguin/assessments/yft/2023/model_runs/stepwise",
 
 # Download results
 for(i in seq_along(folders))
-  try(full_download(folders[i]))
+  try(condor_download(folders[i]))
