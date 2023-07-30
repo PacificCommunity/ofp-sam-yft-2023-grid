@@ -78,7 +78,6 @@ for(i in 1:length(size))
       # We insert two lines of text (first year) into the middle of the parfile
       # But only do this if the first year is not already in the parfile
       txt <- readLines(new.parfile)
-
       if(!any(grepl("# First year in model", txt)))
       {
         pos2 <- grep("# The grouped_catch_dev_coffs flag", txt)
