@@ -1,7 +1,7 @@
 suppressMessages(library(FLR4MFCL))
 library(tools)  # file_path_sans_ext
 
-template.dir <- "c:/x/yft/mix2/Jitter_14c_m2_s10_a050_h80/Jitter_14c_m2_s10_a050_h80_10"
+# template.dir <- "c:/x/yft/mix2/Jitter_14c_m2_s10_a050_h80/Jitter_14c_m2_s10_a050_h80_10"
 
 species <- "yft"
 mix <- as.integer(gsub(".*_m([0-9])_.*", "\\1", template.dir))
