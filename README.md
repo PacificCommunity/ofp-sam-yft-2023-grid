@@ -33,5 +33,5 @@ Size data weighting |      3 | Sample sizes divided by 10, 20*, 40
 Age data weighting  |      3 | 0.5, 0.75*, 1
 Steepness           |      3 | 0.65, 0.80*, 0.95
 
-A zip file containing the grid results is available on the **[release
-page](https://github.com/PacificCommunity/ofp-sam-yft-2023-grid/releases)**.
+A zip file containing the grid results is available on the [release
+page](https://github.com/PacificCommunity/ofp-sam-yft-2023-grid/releases).
