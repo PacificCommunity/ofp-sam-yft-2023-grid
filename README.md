@@ -26,8 +26,6 @@ Steepness           |      3 | 0.65, 0.80*, 0.95
 
 ## Grid results
 
-**Grid results from the Yellowfin 2023 assessment**
-
 The [yft-2023-grid-results.zip](https://github.com/PacificCommunity/ofp-sam-yft-2023-grid/releases/download/file/yft-2023-grid-results.zip) file contains all files necessary to run or browse the YFT 2023 grid models.
 
 The grid models are run from a par file, as described in the corresponding `doitall.sh` script. This starting par file is the best of 20 jittered par files from the pre-grid analysis.
