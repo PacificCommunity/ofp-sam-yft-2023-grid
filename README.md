@@ -2,25 +2,16 @@
 
 Download YFT 2023 assessment report:
 
-- **Stock assessment of yellowfin tuna in the western and central Pacific Ocean:
-  2023**\
+- **Stock assessment of yellowfin tuna in the western and central Pacific Ocean: 2023**\
   **[WCPFC-SC19-2023/SA-WP-04](https://meetings.wcpfc.int/node/19352)**
 
 Download YFT 2023 diagnostic model:
 
-- Clone the
-  **[yft-2023-diagnostic](https://github.com/PacificCommunity/ofp-sam-yft-2023-diagnostic)**
-  repository or download as
-  **[main.zip](https://github.com/PacificCommunity/ofp-sam-yft-2023-diagnostic/archive/refs/heads/main.zip)**
-  file
+- Clone the **[yft-2023-diagnostic](https://github.com/PacificCommunity/ofp-sam-yft-2023-diagnostic)** repository or download as **[main.zip](https://github.com/PacificCommunity/ofp-sam-yft-2023-diagnostic/archive/refs/heads/main.zip)** file
 
 Download YFT 2023 grid results:
 
-- The
-  **[yft-2023-grid](https://github.com/PacificCommunity/ofp-sam-yft-2023-grid/releases)**
-  release page includes a
-  **[yft-2023-grid-results.zip](https://github.com/PacificCommunity/ofp-sam-yft-2023-grid/releases/download/file/yft-2023-grid-results.zip)**
-  file
+- The **[yft-2023-grid](https://github.com/PacificCommunity/ofp-sam-yft-2023-grid/releases)** release page includes a **[yft-2023-grid-results.zip](https://github.com/PacificCommunity/ofp-sam-yft-2023-grid/releases/download/file/yft-2023-grid-results.zip)** file
 
 ## Grid of ensemble models
 
@@ -37,17 +28,11 @@ Steepness           |      3 | 0.65, 0.80*, 0.95
 
 **Grid results from the Yellowfin 2023 assessment**
 
-The
-[yft-2023-grid-results.zip](https://github.com/PacificCommunity/ofp-sam-yft-2023-grid/releases/download/file/yft-2023-grid-results.zip)
-file contains all files necessary to run or browse the YFT 2023 grid models.
+The [yft-2023-grid-results.zip](https://github.com/PacificCommunity/ofp-sam-yft-2023-grid/releases/download/file/yft-2023-grid-results.zip) file contains all files necessary to run or browse the YFT 2023 grid models.
 
-The grid models are run from a par file, as described in the corresponding
-`doitall.sh` script. This starting par file is the best of 20 jittered par files
-from the pre-grid analysis.
+The grid models are run from a par file, as described in the corresponding `doitall.sh` script. This starting par file is the best of 20 jittered par files from the pre-grid analysis.
 
-The final par and rep files are consistently named `final.par` and
-`plot-final.par.rep` to facilitate harvesting results from across the 54 grid
-member models.
+The final par and rep files are consistently named `final.par` and `plot-final.par.rep` to facilitate harvesting results from across the 54 grid member models.
 
 Preview of zip file contents:
 
