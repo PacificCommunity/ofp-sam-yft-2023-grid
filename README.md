@@ -57,5 +57,5 @@ yft-2023-grid-results.zip
     │   ├── yft.tag
     │   └── yft.var
     ├── m1_s10_a050_h80
-    │   └── ...
+    │   ├── ...
 ```
