@@ -42,4 +42,4 @@ for(i in seq_along(models))
 
 # Then produce zip file in Linux, preserving executable bit for mfclo64 and *.sh
 # $ chmod 755 bin/mfclo64 grid/*/*.sh
-# $ zip -rX zipfile.zip bin grid
+# $ zip -rX zipfile.zip bin grid README.md
