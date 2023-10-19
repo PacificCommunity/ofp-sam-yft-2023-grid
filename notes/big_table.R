@@ -18,9 +18,8 @@ get_shiny <- function(folder)
 read <- function(x) scan(x, integer(), n=1, quiet=TRUE)
 
 # Read results from Shiny apps
-shiny1 <- "z:/yft/2023/model_runs/grid/round_3_m1_final/shiny/app/data"
-shiny2 <- "z:/yft/2023/model_runs/grid/round_3_m2_final/shiny/app/data"
-tab <- rbind(get_shiny(shiny1), get_shiny(shiny2))
+shiny <- "z:/yft/2023/model_runs/grid/full/shiny/app/data"
+tab <- get_shiny(shiny)
 
 # Read results from Hessian dirs
 grid <- "z:/yft/2023/model_runs/grid/full_hessian"
@@ -38,4 +37,5 @@ x$Gradient <- formatC(x$Gradient, format="f", digits=5)
 x$Depletion <- formatC(x$Depletion, format="f", digits=3)
 
 # Write table
-write.table(x, "big_table.dat", quote=FALSE, row.names=FALSE)
+x <- capture.output(write.table(x, "", quote=FALSE, row.names=FALSE))
+writeLines(trimws(x), "big_table.dat")
