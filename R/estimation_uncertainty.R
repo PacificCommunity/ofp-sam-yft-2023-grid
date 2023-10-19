@@ -48,4 +48,6 @@ uncertainty <- data.frame(
 row.names(uncertainty) <- c("Mean", "Median", "Min", "10%ile", "90%ile", "Max")
 uncertainty <- data.frame(Refpt=names(uncertainty), t(uncertainty),
                           row.names=NULL, check.names=FALSE)
+
+# Write out table
 write.csv(uncertainty, "estimation_uncertainty.csv", row.names=FALSE)
