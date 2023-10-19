@@ -1,6 +1,6 @@
 # Calculate and write out estimation_uncertainty.csv table
 # History: 2023-08-11 thomast created, including plots for assessment report
-#          2023-10-19 arnim streamlined to produce just the table
+#          2023-10-19 arnim streamlined for the web, producing just the table
 
 library(FLR4MFCL)
 
