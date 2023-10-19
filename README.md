@@ -66,6 +66,7 @@ The [estimation_uncertainty.R](notes/estimation_uncertainty.R) script uses Monte
 
 See also Section 6.2.3 and Table 5 in the YFT 2023 stock assessment [report](https://meetings.wcpfc.int/node/19352).
 
+The script requires the FLR and FLR4MFCL packages:
 ```
 install_github("flr/FLCore")
 install_github("PacificCommunity/FLR4MFCL")
