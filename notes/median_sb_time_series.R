@@ -27,7 +27,7 @@ for(i in seq_along(repfiles))
 message("done")
 names(rep) <- names(sb) <- models
 
-# Calculate SB median
+# Calculate median SB median
 sb.matrix <- sapply(sb, drop)
 sb.median <- apply(sb.matrix, 1, median)
 median.sb.time.series <-
@@ -36,6 +36,8 @@ median.sb.time.series <-
 # Write table
 write.taf(median.sb.time.series)
 
-plot(median.sb.time.series$Year, median.sb.time.series$SB/1e3,
-     ylim=lim(median.sb.time.series/1e3), type="l", xlab="Year", ylab="SB",
-     panel.first=grid())
+# Save plot
+taf.png("median_sb_time_series.png")
+plot(SB/1e3~Year, median.sb.time.series, ylim=lim(SB/1e3), type="l",
+     xlab="Year", ylab="SB (1000 t)", panel.first=quote(grid()))
+dev.off()
