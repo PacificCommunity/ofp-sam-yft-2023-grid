@@ -1,4 +1,4 @@
-# YFT 2023 Grid
+# YFT 2023 Grid Results
 
 Download YFT 2023 assessment report:
 
